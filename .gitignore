@@ -1,0 +1,21 @@
+﻿# Python
+__pycache__/
+*.pyc
+.env
+venv/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Terraform
+*.tfstate
+.terraform/
+
+# Secrets
+*.key
+*.pem
+
+# Azure
+config.json
