@@ -1,0 +1,27 @@
+﻿name: Train Model on Azure ML
+on: workflow_dispatch
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Azure Login
+        uses: azure/login@v3
+        with:
+          creds: `${{ secrets.AZURE_CREDENTIALS }}`
+      
+      - name: Install Azure ML extension
+        run: az extension add -n ml -y
+      
+      - name: Submit training job
+        run: |
+          az ml job create \
+            --name "house-price-train-$(date +%Y%m%d-%H%M%S)" \
+            --workspace-name aml-launch \
+            --resource-group rg-mlops-learning \
+            --code . \
+            --command "pip install scikit-learn pandas && python src/train.py" \
+            --environment AzureML-sklearn-1.0-ubuntu20.04-py38-cpu@latest \
+            --compute cpu-cluster
