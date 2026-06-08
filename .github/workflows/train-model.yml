@@ -15,13 +15,20 @@ jobs:
       - name: Install Azure ML extension
         run: az extension add -n ml -y
       
+      - name: Create config.json
+        run: |
+          echo '{
+              "subscription_id": "6a65c104-56f5-4fb1-8bb7-565d7d7f3c44",
+              "resource_group": "rg-mlops-learning",
+              "workspace_name": "aml-launch"
+          }' > config.json
+      
       - name: Submit training job
         run: |
           az ml job create \
-            --name "house-price-train" \
+            --name "house-price-train-$(date +%Y%m%d-%H%M%S)" \
             --workspace-name aml-launch \
             --resource-group rg-mlops-learning \
             --code . \
             --command "pip install scikit-learn pandas && python src/train.py" \
-            --environment AzureML-sklearn-1.0-ubuntu20.04-py38-cpu@latest \
-            --compute cpu-cluster
+            --environment AzureML-sklearn-1.0-ubuntu20.04-py38-cpu@latest
